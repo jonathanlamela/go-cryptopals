@@ -157,7 +157,16 @@ func (c CryptoBytes) FindKS() (int, error) {
 
 		// Calculate average normalized Hamming distance between all pairs
 		// Normalized by key size to make different key sizes comparable
-		ds := float64(CryptoBytes(b1).ComputeDistanceBytes(b2)+CryptoBytes(b1).ComputeDistanceBytes(b3)+CryptoBytes(b1).ComputeDistanceBytes(b4)+CryptoBytes(b2).ComputeDistanceBytes(b3)+CryptoBytes(b2).ComputeDistanceBytes(b4)+CryptoBytes(b3).ComputeDistanceBytes(b4)) / (6.0 * float64(ks))
+		// Calculate sum of all pairwise distances
+		totalDistance := CryptoBytes(b1).ComputeDistanceBytes(b2) +
+			CryptoBytes(b1).ComputeDistanceBytes(b3) +
+			CryptoBytes(b1).ComputeDistanceBytes(b4) +
+			CryptoBytes(b2).ComputeDistanceBytes(b3) +
+			CryptoBytes(b2).ComputeDistanceBytes(b4) +
+			CryptoBytes(b3).ComputeDistanceBytes(b4)
+
+		// Normalize by number of pairs (6) and key size
+		ds := float64(totalDistance) / (6.0 * float64(ks))
 
 		// Keep the key size with minimum distance
 		if ds < outDist {
@@ -358,9 +367,10 @@ func (c CryptoBytes) SSLECBDecrypt(key []byte, pad bool) ([]byte, error) {
 // before encryption. The first block is XORed with the IV (Initialization Vector).
 //
 // Parameters:
-//   key: 16-byte AES-128 key
-//   iv:  16-byte initialization vector (must be random for security)
-//   pad: if true, applies PKCS#7 padding; if false, data must be multiple of 16 bytes
+//
+//	key: 16-byte AES-128 key
+//	iv:  16-byte initialization vector (must be random for security)
+//	pad: if true, applies PKCS#7 padding; if false, data must be multiple of 16 bytes
 func (c CryptoBytes) SSLCBCEncrypt(key, iv []byte, pad bool) ([]byte, error) {
 	if len(key) != 16 {
 		return nil, errors.ErrBadKeySize
@@ -387,9 +397,10 @@ func (c CryptoBytes) SSLCBCEncrypt(key, iv []byte, pad bool) ([]byte, error) {
 // ciphertext block (or IV for the first block) to recover the plaintext.
 //
 // Parameters:
-//   key: 16-byte AES-128 key
-//   iv:  16-byte initialization vector (must match encryption IV)
-//   pad: if true, removes and validates PKCS#7 padding after decryption
+//
+//	key: 16-byte AES-128 key
+//	iv:  16-byte initialization vector (must match encryption IV)
+//	pad: if true, removes and validates PKCS#7 padding after decryption
 func (c CryptoBytes) SSLCBCDecrypt(key, iv []byte, pad bool) ([]byte, error) {
 	if len(key) != 16 {
 		return nil, errors.ErrBadKeySize
@@ -423,8 +434,9 @@ func (c CryptoBytes) SSLCBCDecrypt(key, iv []byte, pad bool) ([]byte, error) {
 // and XORing the result with the plaintext. It's symmetric: encryption = decryption.
 //
 // Parameters:
-//   key: 16-byte AES-128 key
-//   iv:  16-byte initialization vector (used as initial counter value)
+//
+//	key: 16-byte AES-128 key
+//	iv:  16-byte initialization vector (used as initial counter value)
 func (c CryptoBytes) SSLCTREncrypt(key []byte, iv []byte) ([]byte, error) {
 	block, _ := aes.NewCipher(key)
 	stream := cipher.NewCTR(block, iv)
