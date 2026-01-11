@@ -5,17 +5,17 @@ import (
 	"github.com/jonathanlamela/go-cryptopals/pkg/errors"
 )
 
-type Base64 struct{ S string }
+type Base64 struct{ Value string }
 
-func FromString(s string) Base64 { return Base64{S: s} }
-func FromBytes(b []byte) Base64  { return Base64{S: stdb64.StdEncoding.EncodeToString(b)} }
+func FromString(s string) Base64 { return Base64{Value: s} }
+func FromBytes(b []byte) Base64  { return Base64{Value: stdb64.StdEncoding.EncodeToString(b)} }
 
 func (b Base64) ToBytes() ([]byte, error) {
-	decoded, err := stdb64.StdEncoding.DecodeString(b.S)
+	decoded, err := stdb64.StdEncoding.DecodeString(b.Value)
 	if err != nil {
 		return nil, errors.ErrInvalidBase64ToBytes
 	}
 	return decoded, nil
 }
 
-func (b Base64) String() string { return b.S }
+func (b Base64) String() string { return b.Value }

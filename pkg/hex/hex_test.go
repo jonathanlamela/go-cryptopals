@@ -46,8 +46,8 @@ func TestFromString(t *testing.T) {
 				t.Errorf("FromString() error = %v, wantErr %v", err, tt.wantErr)
 			}
 			if !tt.wantErr {
-				if got.S != tt.input {
-					t.Errorf("FromString() got = %v, want %v", got.S, tt.input)
+				if got.Value != tt.input {
+					t.Errorf("FromString() got = %v, want %v", got.Value, tt.input)
 				}
 			}
 		})
@@ -142,7 +142,7 @@ func TestLen(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			h := Hex{S: tt.input}
+			h := Hex{Value: tt.input}
 			if got := h.Len(); got != tt.want {
 				t.Errorf("Len() got = %v, want %v", got, tt.want)
 			}
