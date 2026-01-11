@@ -27,8 +27,8 @@ func TestFromString(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := FromString(tt.input)
-			if got.S != tt.want {
-				t.Errorf("FromString() got = %v, want %v", got.S, tt.want)
+			if got.Value != tt.want {
+				t.Errorf("FromString() got = %v, want %v", got.Value, tt.want)
 			}
 		})
 	}
@@ -60,8 +60,8 @@ func TestFromBytes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := FromBytes(tt.input)
-			if got.S != tt.want {
-				t.Errorf("FromBytes() got = %v, want %v", got.S, tt.want)
+			if got.Value != tt.want {
+				t.Errorf("FromBytes() got = %v, want %v", got.Value, tt.want)
 			}
 		})
 	}
@@ -93,7 +93,7 @@ func TestToBytes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			b := Base64{S: tt.input}
+			b := Base64{Value: tt.input}
 			got, err := b.ToBytes()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ToBytes() error = %v, wantErr %v", err, tt.wantErr)
@@ -120,7 +120,7 @@ func TestString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			b := Base64{S: tt.input}
+			b := Base64{Value: tt.input}
 			if got := b.String(); got != tt.want {
 				t.Errorf("String() got = %v, want %v", got, tt.want)
 			}
@@ -129,7 +129,7 @@ func TestString(t *testing.T) {
 }
 
 func TestErrorCases(t *testing.T) {
-	b := Base64{S: "!!!invalid!!!"}
+	b := Base64{Value: "!!!invalid!!!"}
 	_, err := b.ToBytes()
 	if err != errors.ErrInvalidBase64ToBytes {
 		t.Errorf("Expected ErrInvalidBase64ToBytes, got %v", err)
